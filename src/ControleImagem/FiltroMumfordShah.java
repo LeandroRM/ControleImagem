@@ -6,9 +6,18 @@ package ControleImagem;
  */
 public class FiltroMumfordShah {
     private final Imagem imagemBase;
+    private final int lambaFinal;
     
-    public FiltroMumfordShah(Imagem imagemBase) {
+    public FiltroMumfordShah(Imagem imagemBase, int iteracoes) {
         this.imagemBase = imagemBase;
+        
+        int auxLambdaFinal = 2;
+        for (int i = 0; i < iteracoes-1; i++) {
+            auxLambdaFinal *= 2;
+        }
+        
+        this.lambaFinal = auxLambdaFinal;
+        
         aplicaFiltro();
     }
     
