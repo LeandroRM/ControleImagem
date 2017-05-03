@@ -14,6 +14,7 @@ public class FiltroMumfordShah {
     
     private void aplicaFiltro() {
         int lambda = 2;
+        
     }
     
     /**
@@ -33,5 +34,9 @@ public class FiltroMumfordShah {
         elasticidade = (int) coeficienteArea * quadradoDiferencaRegioes;
         
         return elasticidade;
+    }
+    
+    public int calculaComprimento(int lamba, Cor cor1, Cor cor2) {
+        
     }
 }
