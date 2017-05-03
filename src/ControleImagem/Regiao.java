@@ -34,6 +34,10 @@ public class Regiao extends Cor {
     public void setMedia(int media) {
         this.media = media;
     }
+
+    public boolean[][] getPixels() {
+        return pixels;
+    }
     
     @Override
     public int getAVG() {
@@ -81,19 +85,32 @@ public class Regiao extends Cor {
         return count;
     }
     
+    public int getBorda(Regiao regiao) {
+        int borda = 0;
+        
+        for (int row = 0; row < this.getPixels().length; row++) {
+            for (int col = 0; col < this.getPixels()[0].length; col++) {
+                if (this.getPixels()[row][col]) {
+                    borda += regiao.getBorda(row, col);
+                }
+            }
+        }
+        
+        return borda;
+    }
+    
     public int getBorda(int row, int col) {
-        int borda = 1;
         int nBorda = 4;
 
         //Verifica acima
-        if (row = 0) {//Caso esteja no topo
+        if (row == 0) {//Caso esteja no topo
             nBorda--;
         } else if (!this.pixels[row-1][col]) {//Caso não seja o topo
             nBorda--;
         }
         
         //Verifica esquerda
-        if (col = 0){//Caso esteja no canto
+        if (col == 0){//Caso esteja no canto
             nBorda--;
         } else if (!this.pixels[row][col-1]) { //Caso contraio
             nBorda--;
