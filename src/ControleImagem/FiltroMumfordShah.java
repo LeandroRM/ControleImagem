@@ -23,32 +23,61 @@ public class FiltroMumfordShah {
     
     private void aplicaFiltro() {
         int lambda = 2;
+        
         while (lambda <= this.lambaFinal) {
             for (int row = 0; row < this.imagemBase.getAltura(); row++) {
                 for (int col = 0; col < this.imagemBase.getLargura(); col++) {
-                    Cor pixelAtual = this.imagemBase.getPIXELS()[row][col];
                     
                     //Tenta fazer fusão com pixel de cima
                     if (row > 0) {
-                        //Verifica se o pixel acima já está em uma região
-                        if (this.imagemBase.getPIXELS()[row-1][col] instanceof Regiao) {
-                            Regiao regiao = (Regiao) this.imagemBase.getPIXELS()[row-1][col];
-                            
-                            //Verifica se o pixel atual não pertence a região do pixel acima
-                            if (!regiao.isPixelInRegiao(row, col)) {
-                                //Se o coeficiente da elasticidade for menor que o coeficiente do comprimento, faz a fusão
-                                if (this.calculaElasticidade(pixelAtual, regiao) < this.calculaComprimento(lambda, row, col, row-1, col)) {
-                                    this.fusao(row, col, regiao);
-                                }
-                            }
-                        } else {
-                            
-                        }
+                        comparaPixels(row, col, row - 1, col, lambda);
+                    }
+                    
+                    //Tenta fazer fusão com pixel da esquerda
+                    if (col > 0) {
+                        comparaPixels(row, col, row, col - 1, lambda);
+                    }
+                    
+                    //Tenta fazer fusão com pixel de baixo
+                    if (row < this.imagemBase.getAltura() - 1) {
+                        comparaPixels(row, col, row + 1, col, lambda);
+                    }
+                    
+                    //Tenta fazer fusão com pixel da direita
+                    if (row < this.imagemBase.getAltura() - 1) {
+                        comparaPixels(row, col, row, col + 1, lambda);
                     }
                 }
             }
             
             lambda *= 2;
+        }
+    }
+    
+    public void comparaPixels(int rowAtual, int colAtual, int rowComparar, int colComparar, int lambda) {
+        Cor pixelAtual = this.imagemBase.getPIXELS()[rowAtual][colAtual];
+        Cor pixelComparar = this.imagemBase.getPIXELS()[rowComparar][colComparar];
+        
+        //Verifica se o pixel acima já está em uma região
+        if (pixelComparar instanceof Regiao) {
+            Regiao regiao = (Regiao) pixelComparar;
+
+            //Verifica se o pixel atual não pertence a região do pixel acima
+            if (!regiao.isPixelInRegiao(rowAtual, colAtual)) {
+                //Se o coeficiente da elasticidade for menor que o coeficiente do comprimento, faz a fusão
+                if (this.calculaElasticidade(pixelAtual, regiao) < this.calculaComprimento(lambda, rowAtual, colAtual, rowComparar, colComparar)) {
+                    this.fusao(rowAtual, colAtual, regiao);
+                }
+            }
+        } else {
+            Regiao regiao = (Regiao)pixelAtual;
+
+            //Verifica se este pixel não está em uma região
+            if (pixelAtual instanceof Regiao) {
+                if (this.calculaElasticidade(regiao, pixelComparar) < this.calculaComprimento(lambda, rowAtual, colAtual, rowComparar, colComparar)) {
+                    this.fusao(rowComparar, colComparar, regiao);
+                }
+            }
         }
     }
     
