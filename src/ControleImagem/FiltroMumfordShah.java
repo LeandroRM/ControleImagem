@@ -65,7 +65,21 @@ public class FiltroMumfordShah {
         return elasticidade;
     }
     
-    public int calculaComprimento(int lamba, Cor cor1, Cor cor2) {
-        
+    public int calculaComprimento(int lambda, int rowCor1, int colCor1, int rowCor2, int colCor2) {
+        int borda = 0;        
+        Cor cor1 = this.imagemBase.getPIXELS()[rowCor1][colCor1];
+        Cor cor2 = this.imagemBase.getPIXELS()[rowCor2][colCor2];
+
+        if (cor1 instanceof Regiao && cor2 instanceof Regiao) {
+            borda = ((Regiao) cor1).getBorda((Regiao) cor2);
+        } else if (cor1 instanceof Regiao && cor2 instanceof Cor){
+            borda = ((Regiao) cor1).getBorda(rowCor2, colCor2);
+        } else if (cor1 instanceof Cor && cor2 instanceof Regiao){
+            borda = ((Regiao) cor2).getBorda(rowCor1, colCor1);
+        } else if(cor1 instanceof Cor && cor2 instanceof Cor) {
+            borda = 1;
+        }
+
+        return lambda*borda;
     }
 }
