@@ -83,13 +83,37 @@ public class Regiao extends Cor {
     
     public int getBorda(int row, int col) {
         int borda = 1;
+        int nBorda = 4;
+
+        //Verifica acima
+        if (row = 0) {//Caso esteja no topo
+            nBorda--;
+        } else if (!this.pixels[row-1][col]) {//Caso não seja o topo
+            nBorda--;
+        }
         
-        /*
-            false false true true
-            true  true  true true
-            false false false false
+        //Verifica esquerda
+        if (col = 0){//Caso esteja no canto
+            nBorda--;
+        } else if (!this.pixels[row][col-1]) { //Caso contraio
+            nBorda--;
+        }
+
+        //Verifica a direita
+        if (col == this.pixels[row].length) { //Caso esteja no canto
+            nBorda--;
+        } else if (!this.pixels[row][col+1]) {//Caso contrario
+            nBorda--;
+        }
+
+        //Verifica abaixo
+        if (row == this.pixels.length) {//Caso esteja no final da imagem
+            nBorda--;
+        } else if (!this.pixels[row+1][col]){ //Caso não seja o final
+            nBorda--;
+        }
         
-        */
+        return nBorda;
     }
     
     private void populaPixels() {
