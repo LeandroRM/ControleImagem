@@ -26,7 +26,7 @@ public class Regiao extends Cor {
      * @param col 
      */
     public void addPixel(int media, int row, int col) {
-        int novaMedia = (this.getAVG() + media) / 2;
+       int novaMedia = (this.getAVG() + media) / 2;
         
     }
 }
