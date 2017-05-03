@@ -23,7 +23,27 @@ public class FiltroMumfordShah {
     
     private void aplicaFiltro() {
         int lambda = 2;
-        
+        while (lambda <= this.lambaFinal) {
+            for (int row = 0; row < this.imagemBase.getAltura(); row++) {
+                for (int col = 0; col < this.imagemBase.getLargura(); col++) {
+                    Cor pixelAtual = this.imagemBase.getPIXELS()[row][col];
+                    
+                    if (row > 0) {
+                        if (this.imagemBase.getPIXELS()[row-1][col] instanceof Regiao) {
+                            Regiao regiao = (Regiao) this.imagemBase.getPIXELS()[row-1][col];
+                            
+                            if (!regiao.isPixelInRegiao(row, col)) {
+                                if (this.calculaElasticidade(pixelAtual, regiao) < this.calculaComprimento(lambda, pixelAtual, pixelAtual))
+                            }
+                        } else {
+                            
+                        }
+                    }
+                }
+            }
+            
+            lambda *= 2;
+        }
     }
     
     /**
