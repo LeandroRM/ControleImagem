@@ -56,4 +56,8 @@ public class Cor {
     public int getBLUE() {
         return BLUE;
     }
+    
+    public int getArea() {
+        return 1;
+    }
 }

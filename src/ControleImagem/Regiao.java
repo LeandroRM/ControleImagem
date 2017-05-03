@@ -67,6 +67,7 @@ public class Regiao extends Cor {
      * Retorna a quantidade de pixels contida na Regiao
      * @return - Area da regiao
      */
+    @Override
     public int getArea() {
         int count = 0;
         for (boolean[] linha : this.pixels) {
@@ -78,6 +79,17 @@ public class Regiao extends Cor {
         }
         
         return count;
+    }
+    
+    public int getBorda(int row, int col) {
+        int borda = 1;
+        
+        /*
+            false false true true
+            true  true  true true
+            false false false false
+        
+        */
     }
     
     private void populaPixels() {
