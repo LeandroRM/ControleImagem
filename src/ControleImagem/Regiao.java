@@ -30,6 +30,10 @@ public class Regiao extends Cor {
         pixels[row1][col1] = true;
         pixels[row2][col2] = true;
     }
+    
+    public Regiao(Regiao regiao1, Regiao regiao2) {
+        super(0,0,0);
+    }
 
     public void setMedia(int media) {
         this.media = media;

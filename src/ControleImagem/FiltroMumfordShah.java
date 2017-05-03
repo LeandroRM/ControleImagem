@@ -33,7 +33,9 @@ public class FiltroMumfordShah {
                             Regiao regiao = (Regiao) this.imagemBase.getPIXELS()[row-1][col];
                             
                             if (!regiao.isPixelInRegiao(row, col)) {
-                                if (this.calculaElasticidade(pixelAtual, regiao) < this.calculaComprimento(lambda, pixelAtual, pixelAtual))
+                                if (this.calculaElasticidade(pixelAtual, regiao) < this.calculaComprimento(lambda, row, col, row-1, col)) {
+                                    this.fusao(row, col, row-1, col);
+                                }
                             }
                         } else {
                             
@@ -69,7 +71,7 @@ public class FiltroMumfordShah {
         int borda = 0;        
         Cor cor1 = this.imagemBase.getPIXELS()[rowCor1][colCor1];
         Cor cor2 = this.imagemBase.getPIXELS()[rowCor2][colCor2];
-
+        
         if (cor1 instanceof Regiao && cor2 instanceof Regiao) {
             borda = ((Regiao) cor1).getBorda((Regiao) cor2);
         } else if (cor1 instanceof Regiao && cor2 instanceof Cor){
@@ -81,5 +83,30 @@ public class FiltroMumfordShah {
         }
 
         return lambda*borda;
+    }
+    
+    /**
+     * Adiciona um novo pixel a uma regiao já existente
+     * 
+     * @param regiao 
+     */
+    public void fusao(int row, int col, Regiao regiao) {
+        //Lembrar de alterar em this.imagemBase a nova posição para o objeto regiao
+    }
+    
+    /**
+     * Cria uma nova regiao
+     * 
+     * @param row1
+     * @param col1
+     * @param row2
+     * @param col2 
+     */
+    public void fusao(int row1, int col1, int row2, int col2) {
+        
+    }
+    
+    public void fusao(Regiao regiao1, Regiao regiao2) {
+        
     }
 }
