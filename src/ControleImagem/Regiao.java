@@ -86,14 +86,14 @@ public class Regiao extends Cor {
         int nBorda = 4;
 
         //Verifica acima
-        if (row = 0) {//Caso esteja no topo
+        if (row == 0) {//Caso esteja no topo
             nBorda--;
         } else if (!this.pixels[row-1][col]) {//Caso não seja o topo
             nBorda--;
         }
         
         //Verifica esquerda
-        if (col = 0){//Caso esteja no canto
+        if (col == 0){//Caso esteja no canto
             nBorda--;
         } else if (!this.pixels[row][col-1]) { //Caso contraio
             nBorda--;
