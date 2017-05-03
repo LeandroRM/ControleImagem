@@ -95,7 +95,9 @@ public class FiltroMumfordShah {
      * @param regiao 
      */
     public void fusao(int row, int col, Regiao regiao) {
-        //Lembrar de alterar em this.imagemBase a nova posição para o objeto regiao
+        Cor cor1 = this.imagemBase.getPIXELS()[row][col];
+        regiao.addPixel(cor1.getAVG(), row, col);
+        this.imagemBase.getPIXELS()[row][col] = regiao;        
     }
     
     /**
@@ -107,7 +109,9 @@ public class FiltroMumfordShah {
      * @param col2 
      */
     public void fusao(int row1, int col1, int row2, int col2) {
-        
+        Regiao regiao = new Regiao(this.imagemBase, row1, col1, row2, col2);        
+        this.imagemBase.getPIXELS()[row1][col1] = regiao;        
+        this.imagemBase.getPIXELS()[row2][col2] = regiao;        
     }
     
     public void fusao(Regiao regiao1, Regiao regiao2) {
