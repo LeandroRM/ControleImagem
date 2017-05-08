@@ -20,19 +20,34 @@ public class Regiao extends Cor {
     public Regiao(Imagem imagem, int row1, int col1, int row2, int col2) {
         //Define qualquer valor
         super(0, 0, 0);
-        //Cria matriz espelho da imagem
         
-        pixels = new boolean[imagem.getAltura()][imagem.getLargura()];
+        //Cria matriz espelho da imagem
+        this.pixels = new boolean[imagem.getAltura()][imagem.getLargura()];
+        
         //Seta todos os valores como false
         populaPixels();
         
         //Seta como true as duas posições pertencentes a regiao
-        pixels[row1][col1] = true;
-        pixels[row2][col2] = true;
+        this.pixels[row1][col1] = true;
+        this.pixels[row2][col2] = true;
+        
+        this.media = (imagem.getPIXELS()[row1][col1].getAVG() + imagem.getPIXELS()[row2][col2].getAVG()) / 2; 
     }
     
     public Regiao(Regiao regiao1, Regiao regiao2) {
+        //Define qualquer valor
         super(0,0,0);
+        this.pixels = regiao1.getPixels();
+        
+        for (int i = 0; i < regiao2.getPixels().length; i++) {
+            for (int j = 0; i < regiao2.getPixels()[i].length; j++) {
+                if (regiao2.getPixels()[i][j]) {
+                    this.pixels[i][j] = true;
+                }
+            }
+        }
+        
+        this.media = (regiao1.getAVG() + regiao2.getAVG()) / 2;
     }
 
     public void setMedia(int media) {
@@ -92,8 +107,8 @@ public class Regiao extends Cor {
     public int getBorda(Regiao regiao) {
         int borda = 0;
         
-        for (int row = 0; row < this.getPixels().length; row++) {
-            for (int col = 0; col < this.getPixels()[0].length; col++) {
+        for (int row = 0; row < this.getPixels().length -1; row++) {
+            for (int col = 0; col < this.getPixels()[0].length-1; col++) {
                 if (this.getPixels()[row][col]) {
                     borda += regiao.getBorda(row, col);
                 }
@@ -121,14 +136,14 @@ public class Regiao extends Cor {
         }
 
         //Verifica a direita
-        if (col == this.pixels[row].length) { //Caso esteja no canto
+        if (col == this.pixels[row].length - 1) { //Caso esteja no canto
             nBorda--;
         } else if (!this.pixels[row][col+1]) {//Caso contrario
             nBorda--;
         }
 
         //Verifica abaixo
-        if (row == this.pixels.length) {//Caso esteja no final da imagem
+        if (row == this.pixels.length - 1) {//Caso esteja no final da imagem
             nBorda--;
         } else if (!this.pixels[row+1][col]){ //Caso não seja o final
             nBorda--;
