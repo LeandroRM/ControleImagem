@@ -31,23 +31,24 @@ public class Regiao extends Cor {
         this.pixels[row1][col1] = true;
         this.pixels[row2][col2] = true;
         
-        this.media = (imagem.getPIXELS()[row1][col1].getAVG() + imagem.getPIXELS()[row2][col2].getAVG()) / 2; 
+        this.setMedia((imagem.getPIXELS()[row1][col1].getAVG() + imagem.getPIXELS()[row2][col2].getAVG()) / 2); 
     }
     
     public Regiao(Regiao regiao1, Regiao regiao2) {
         //Define qualquer valor
         super(0,0,0);
-        this.pixels = regiao1.getPixels();
+        this.pixels = new boolean[regiao1.getPixels().length][regiao1.getPixels()[0].length];
         
-        for (int i = 0; i < regiao2.getPixels().length; i++) {
-            for (int j = 0; i < regiao2.getPixels()[i].length; j++) {
-                if (regiao2.getPixels()[i][j]) {
+        for (int i = 0; i < this.pixels.length - 1; i++) {
+            for (int j = 0; j < this.pixels[i].length - 1; j++) {
+                if (regiao1.getPixels()[i][j] || regiao2.getPixels()[i][j]) {
                     this.pixels[i][j] = true;
                 }
             }
         }
         
-        this.media = (regiao1.getAVG() + regiao2.getAVG()) / 2;
+        int novaMedia = (regiao1.getAVG() * regiao1.getArea()) + (regiao2.getAVG() * regiao2.getArea());
+        this.setMedia(novaMedia / (regiao1.getArea() + regiao2.getArea()));
     }
 
     public void setMedia(int media) {
@@ -71,8 +72,12 @@ public class Regiao extends Cor {
      * @param col 
      */
     public void addPixel(int media, int row, int col) {
-       setMedia((this.getAVG() + media) / 2);
-       this.pixels[row][col] = true;
+        int area = this.getArea();
+        int novaMedia = (this.getAVG() * area) + media;
+        novaMedia = novaMedia / (area + 1);
+        this.setMedia(novaMedia);
+
+        this.pixels[row][col] = true;
     }
     
     /**
@@ -93,9 +98,10 @@ public class Regiao extends Cor {
     @Override
     public int getArea() {
         int count = 0;
+        
         for (boolean[] linha : this.pixels) {
-            for (int i = 0; i < linha.length; i++) {
-                if(linha[i]) {
+            for (boolean pixel : linha) {
+                if(pixel) {
                     count++;
                 }
             }

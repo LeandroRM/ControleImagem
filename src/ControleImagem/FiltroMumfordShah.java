@@ -27,11 +27,10 @@ public class FiltroMumfordShah {
     
     private void aplicaFiltro() {
         int lambda = 2;
-        System.out.println("Lambda Final: " + this.lambdaFinal);
+
         while (lambda <= this.lambdaFinal) {
             for (int row = 0; row < this.imagemBase.getAltura() - 1; row++) {
                 for (int col = 0; col < this.imagemBase.getLargura() - 1; col++) {
-                    
                     //Tenta fazer fusão com pixel de cima
                     if (row > 0) {
                         comparaPixels(row, col, row - 1, col, lambda);
@@ -52,14 +51,9 @@ public class FiltroMumfordShah {
                         comparaPixels(row, col, row, col + 1, lambda);
                     }
                 }
-                
-                System.out.println("linha: " + (row+1));
             }
             
             lambda *= 2;
-            System.out.println("----------------------------------------");
-            System.out.println("Lambda: " + lambda);
-            System.out.println("----------------------------------------");
         }
     }
     
@@ -75,8 +69,19 @@ public class FiltroMumfordShah {
         Cor pixelAtual = this.imagemBase.getPIXELS()[rowAtual][colAtual];
         Cor pixelComparar = this.imagemBase.getPIXELS()[rowComparar][colComparar];
         
-        //Verifica se o pixel a ser comparado já está em uma região
-        if (pixelComparar instanceof Regiao) {
+        //Verifica se ambos os pixels já não estão em regiões
+        if (pixelComparar instanceof Regiao && pixelAtual instanceof Regiao) {
+            Regiao regiaoAtual = (Regiao) pixelAtual;
+            Regiao regiaoComparar = (Regiao) pixelComparar;
+
+            //Verifica se o pixel atual não pertence a mesma região do pixel a ser comparado
+            if (!regiaoAtual.isPixelInRegiao(rowComparar, colComparar)) {
+                //Se o coeficiente da elasticidade for menor que o coeficiente do comprimento, faz a fusão
+                if (this.calculaElasticidade(regiaoAtual, regiaoComparar) < this.calculaComprimento(lambda, rowAtual, colAtual, rowComparar, colComparar)) {
+                    this.fusao(regiaoAtual, regiaoComparar);
+                }
+            }
+        } else if (pixelComparar instanceof Regiao) {//Verifica se o pixel a ser comparado já está em uma região
             Regiao regiao = (Regiao) pixelComparar;
 
             //Verifica se o pixel atual não pertence a mesma região do pixel a ser comparado
@@ -113,14 +118,17 @@ public class FiltroMumfordShah {
      */
     public int calculaElasticidade(Cor cor1, Cor cor2) {
         int elasticidade = 0;
-        double a = cor1.getArea() * cor2.getArea();
-        double b = cor1.getArea() + cor2.getArea();
+        double mult = cor1.getArea() * cor2.getArea();
+        double soma = cor1.getArea() + cor2.getArea();
         
-        double coeficienteArea = ((double)(cor1.getArea() * cor2.getArea())) / ((double)(cor1.getArea() + cor2.getArea()));
-        int quadradoDiferencaRegioes = cor1.getAVG() - cor2.getAVG();
-        quadradoDiferencaRegioes *= quadradoDiferencaRegioes;
+        double coeficienteArea = mult / soma;
+        double quadradoDiferencaRegioes = Math.pow(cor1.getAVG() - cor2.getAVG(), 2);
 
-        elasticidade = (int) coeficienteArea * quadradoDiferencaRegioes;
+        elasticidade = (int) (coeficienteArea * quadradoDiferencaRegioes);
+        
+        if (elasticidade < 0) {
+            elasticidade *= -1;
+        }
         
         return elasticidade;
     }
@@ -144,18 +152,6 @@ public class FiltroMumfordShah {
     }
     
     /**
-     * Adiciona um novo pixel a uma regiao já existente
-     * 
-     * @param regiao 
-     */
-    public void fusao(int row, int col, Regiao regiao) {
-        Cor cor1 = this.imagemBase.getPIXELS()[row][col];
-        
-        regiao.addPixel((cor1.getAVG() + regiao.getAVG()) / 2, row, col);
-        this.imagemBase.getPIXELS()[row][col] = regiao;        
-    }
-    
-    /**
      * Cria uma nova regiao
      * 
      * @param row1
@@ -169,8 +165,19 @@ public class FiltroMumfordShah {
         this.imagemBase.getPIXELS()[row2][col2] = regiao;        
     }
     
+    /**
+     * Adiciona um novo pixel a uma regiao já existente
+     * 
+     * @param regiao 
+     */
+    public void fusao(int row, int col, Regiao regiao) {
+        regiao.addPixel(this.imagemBase.getPIXELS()[row][col].getAVG(), row, col);
+        this.imagemBase.getPIXELS()[row][col] = regiao;        
+    }
+    
     public void fusao(Regiao regiao1, Regiao regiao2) {
         Regiao novaRegiao = new Regiao(regiao1, regiao2);
+        
         for (int row = 0; row < novaRegiao.getPixels().length -1; row++) {
             for (int col = 0; col < novaRegiao.getPixels()[row].length -1; col++) {
                 if (novaRegiao.getPixels()[row][col]) {
